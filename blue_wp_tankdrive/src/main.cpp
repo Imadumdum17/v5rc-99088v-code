@@ -30,9 +30,13 @@ void drivelinear(double distance, directionType direction) {
 
 //auton function
 void autonomous(void) {
+  //set motor velocities so to motor actuallygo zoom zoom
+  LeftMotor.setVelocity(100, percent);
+  RightMotor.setVelocity(100, percent);
+
   drivelinear(48, forward);
-  LeftMotor.spinFor(forward, 90, degrees);
-  RightMotor.spinFor(reverse, 90, degrees);
+  LeftMotor.spinFor(forward, 90, degrees, 100);
+  RightMotor.spinFor(reverse, 90, degrees, 100);
   Brain.Screen.print("skibidi!!!");
 }
 
