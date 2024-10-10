@@ -2,6 +2,7 @@
 
 using namespace vex;
 
+//this line makes so much sense
 competition Competition;
 
 //input test
@@ -14,20 +15,25 @@ void onevent_Controller1ButtonB_pressed_0() {
 }
 
 int img = 3;
+double speed = 56.7; //inches per second
 
 //forward and backward drive function
-//call with drivelinear([time], [sec or msec], [forward or backward]);
-void drivelinear(int time, timeUnits unit, directionType direction) {
+//call with drivelinear([distance in inches], [forward or backward]);
+void drivelinear(double distance, directionType direction) {
+  int time = distance/speed;
   LeftMotor.spin(direction);
   RightMotor.spin(direction);
-  wait(time, unit);
+  wait(time, sec);
   LeftMotor.stop(brake);
   RightMotor.stop(brake);
 }
 
 //auton function
 void autonomous(void) {
-  drivelinear(1.26984, sec, forward);
+  drivelinear(48, forward);
+  LeftMotor.spinFor(forward, 90, degrees);
+  RightMotor.spinFor(reverse, 90, degrees);
+  Brain.Screen.print("skibidi!!!");
 }
 
 //user control function
