@@ -13,9 +13,10 @@ motor MotorFR = motor(PORT11, ratio18_1, false);
 motor MotorBL = motor(PORT20, ratio18_1, true);
 motor intake = motor(PORT8, ratio6_1, true);
 motor conveyor = motor(PORT9, ratio18_1, true);
-motor_group LeftMotor = motor_group(MotorFL, MotorBL);
-motor_group RightMotor = motor_group(MotorFR, MotorBR);
-motor_group ringmech = motor_group(intake, conveyor);
+motor clamp = motor(PORT4, ratio18_1, false);
+motor_group leftMotor = motor_group(MotorFL, MotorBL);
+motor_group rightMotor = motor_group(MotorFR, MotorBR);
+motor_group ringMech = motor_group(intake, conveyor);
 
 // VEXcode generated functions
 

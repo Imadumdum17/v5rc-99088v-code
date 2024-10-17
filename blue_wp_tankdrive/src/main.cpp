@@ -1,18 +1,11 @@
 #include "vex.h"
+#include <iostream>
+#include <string>
 
 using namespace vex;
 
 //this line makes so much sense
 competition Competition;
-
-//input test
-void onevent_Controller1ButtonA_pressed_0() {
-  Controller1.Screen.print("the funni text ");
-}
-//also input test
-void onevent_Controller1ButtonB_pressed_0() {
-  Brain.Screen.print("test!!! ");
-}
 
 int img = 3;
 double speed = 56.7; //inches per second
@@ -21,22 +14,42 @@ double speed = 56.7; //inches per second
 //call with drivelinear([distance in inches], [forward or backward]);
 void drivelinear(double distance, directionType direction) {
   int time = distance/speed;
-  LeftMotor.spin(direction);
-  RightMotor.spin(direction);
+  leftMotor.spin(direction);
+  rightMotor.spin(direction);
   wait(time, sec);
-  LeftMotor.stop(brake);
-  RightMotor.stop(brake);
+  leftMotor.stop(brake);
+  rightMotor.stop(brake);
+}
+
+//turning drive function
+//call with turn([degrees], "[direction]");
+void turn(double degreesvar, std::string direction) {
+  double degreesFinal = degreesvar / 2;
+  if(direction == "left") {
+    leftMotor.spinFor(forward, degreesFinal, degrees);
+    rightMotor.spinFor(reverse, degreesFinal, degrees);
+  }
+  if(direction == "right") {
+    leftMotor.spinFor(reverse, degreesFinal, degrees);
+    rightMotor.spinFor(forward, degreesFinal, degrees);
+  }
 }
 
 //auton function
 void autonomous(void) {
-  //set motor velocities so to motor actuallygo zoom zoom
-  LeftMotor.setVelocity(100, percent);
-  RightMotor.setVelocity(100, percent);
-
+  //set motor velocities so the motor actually goes zoom zoom
+  leftMotor.setVelocity(100, percent);
+  rightMotor.setVelocity(100, percent);
   drivelinear(48, forward);
-  LeftMotor.spinFor(forward, 90, degrees, 100);
-  RightMotor.spinFor(reverse, 90, degrees, 100);
+  ringMech.spinFor(forward, 360, degrees);
+  drivelinear(24, reverse);
+  turn(90, "left");
+  drivelinear(24, forward);
+  ringMech.spinFor(forward, 360, degrees);
+  drivelinear(24, reverse);
+  turn(90, "right");
+  drivelinear(24, forward);
+  ringMech.spinFor(forward, 360, degrees);
   Brain.Screen.print("skibidi!!!");
 }
 
@@ -52,11 +65,25 @@ int main() {
   //funni image drawing
   Brain.Screen.drawImageFromFile("image.bmp", 0, 0);
 
-  //call input functions when input recieved
-  Controller1.ButtonA.pressed(onevent_Controller1ButtonA_pressed_0);
-  wait(15, msec);
-  Controller1.ButtonB.pressed(onevent_Controller1ButtonB_pressed_0);
-  wait(15, msec);
+  if (Controller1.ButtonL1.pressing()) {
+    clamp.spin(forward); 
+    clamp.setVelocity(100, percent);
+  } 
+  else if (Controller1.ButtonL2.pressing()) {
+    clamp.spin(reverse); 
+    clamp.setVelocity(20, percent);
+  }
+  else {
+    clamp.stop();
+  }
+
+  if (Controller1.ButtonR2.pressing()) {
+    ringMech.spin(forward); 
+    ringMech.setVelocity(100, percent);
+  }
+  else {
+    clamp.stop();
+  }
 
   // Initializing Robot Configuration. DO NOT REMOVE!    but what if i wanna remove it
   vexcodeInit();
@@ -70,19 +97,19 @@ int main() {
 
     //turns off left motors if in deadband range, otherwise sets to speed variable
     if (abs(leftMotorSpeed) < deadband) {
-      LeftMotor.setVelocity(0, percent);
+      leftMotor.setVelocity(0, percent);
     } else {
-      LeftMotor.setVelocity(leftMotorSpeed, percent);
+      leftMotor.setVelocity(leftMotorSpeed, percent);
     }
     //turns off right motors if in deadband range, otherwise sets to speed variable
     if (abs(rightMotorSpeed) < deadband) {
-      RightMotor.setVelocity(0, percent);
+      rightMotor.setVelocity(0, percent);
     } else {
-      RightMotor.setVelocity(rightMotorSpeed, percent);
+      rightMotor.setVelocity(rightMotorSpeed, percent);
     }
 
-    LeftMotor.spin(forward);
-    RightMotor.spin(forward);
+    leftMotor.spin(forward);
+    rightMotor.spin(forward);
 
     wait(25, msec);
   }

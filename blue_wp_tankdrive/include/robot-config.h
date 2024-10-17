@@ -9,9 +9,10 @@ extern motor BL;
 extern motor BR;
 extern motor intake;
 extern motor conveyor;
-extern motor_group LeftMotor;
-extern motor_group RightMotor;
-extern motor_group ringmech;
+extern motor clamp;
+extern motor_group leftMotor;
+extern motor_group rightMotor;
+extern motor_group ringMech;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
