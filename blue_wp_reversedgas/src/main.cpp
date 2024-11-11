@@ -10,7 +10,6 @@ competition Competition;
 int img = 3;
 double speed = 56.7; //inches per second
 bool conveyorToggle = false;
-bool conveyorReverseToggle = false;
 
 void onevent_Controller1ButtonL1_pressed_0() {
   conveyorToggle = !conveyorToggle;
@@ -101,8 +100,8 @@ int main() {
     }
 
     //set speed variables to controller axis
-    int leftMotorSpeed = Controller1.Axis3.position();
-    int rightMotorSpeed = Controller1.Axis2.position();
+    int leftMotorSpeed = !Controller1.Axis3.position() + Controller1.Axis1.position();
+    int rightMotorSpeed = !Controller1.Axis3.position() - Controller1.Axis1.position();
 
     //turns off left motors if in deadband range, otherwise sets to speed variable
     if (abs(leftMotorSpeed) < deadband) {

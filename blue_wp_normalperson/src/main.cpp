@@ -10,7 +10,6 @@ competition Competition;
 int img = 3;
 double speed = 56.7; //inches per second
 bool conveyorToggle = false;
-bool conveyorReverseToggle = false;
 
 void onevent_Controller1ButtonL1_pressed_0() {
   conveyorToggle = !conveyorToggle;
@@ -53,6 +52,8 @@ void autonomous(void) {
   //set motor velocities so the motor actually goes zoom zoom
   leftMotor.setVelocity(100, percent);
   rightMotor.setVelocity(100, percent);
+  /* leftMotor.spin(forward);
+  rightMotor.spin(reverse); */
   drivelinear(48, forward);
   ringMech.spinFor(forward, 360, degrees);
   drivelinear(24, reverse);
@@ -63,23 +64,13 @@ void autonomous(void) {
   turn(90, "right");
   drivelinear(24, forward);
   ringMech.spinFor(forward, 360, degrees);
-  Brain.Screen.print("skibidi!!!");
+  Brain.Screen.print("test!!!");
 }
 
 //user control function
 void usercontrol(void) {
-
-//when started/main function
-}
-int main() {
-  conveyorToggle = false;
-
-  //call auton and dc functions when auton/dc
-  Competition.autonomous(autonomous);
-  Competition.drivercontrol(usercontrol);
-  //funni image drawing
-  Brain.Screen.drawImageFromFile("image.bmp", 0, 0);
-
+  int deadband = 5;
+  
   Controller1.ButtonL1.pressed(onevent_Controller1ButtonL1_pressed_0);
   wait(15, msec);
   Controller1.ButtonR2.pressed(onevent_Controller1ButtonR2_pressed_0);
@@ -87,11 +78,7 @@ int main() {
     Controller1.ButtonR1.pressed(onevent_Controller1ButtonR1_pressed_0);
   wait(15, msec);
 
-  // Initializing Robot Configuration. DO NOT REMOVE!    but what if i wanna remove it
-  vexcodeInit();
-
-  int deadband = 5;
-
+  
   while (true) {
     if (conveyorToggle == true) {
       ringMech.spin(forward);
@@ -100,9 +87,9 @@ int main() {
       ringMech.stop(brake);
     }
 
-    //set speed variables to controller axis
-    int leftMotorSpeed = Controller1.Axis3.position();
-    int rightMotorSpeed = Controller1.Axis2.position();
+    //set speed variables to axis
+    int leftMotorSpeed = Controller1.Axis3.position() + Controller1.Axis1.position();
+    int rightMotorSpeed = Controller1.Axis3.position() - Controller1.Axis1.position();
 
     //turns off left motors if in deadband range, otherwise sets to speed variable
     if (abs(leftMotorSpeed) < deadband) {
@@ -122,4 +109,21 @@ int main() {
 
     wait(25, msec);
   }
+
+//when started/main function
+}
+int main() {
+  conveyorToggle = false;
+
+  //call auton and dc functions when auton/dc
+  Competition.autonomous(autonomous);
+  return 0;
+  Competition.drivercontrol(usercontrol);
+  //funni image drawing
+  Brain.Screen.drawImageFromFile("image.bmp", 0, 0);
+
+  // Initializing Robot Configuration. DO NOT REMOVE!    but what if i wanna remove it
+  vexcodeInit();
+
+    wait(25, msec);
 }

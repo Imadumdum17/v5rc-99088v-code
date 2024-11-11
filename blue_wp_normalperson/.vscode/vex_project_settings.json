@@ -1,0 +1,19 @@
+{
+	"extension": {
+		"version": "0.6.0",
+		"json": 2
+	},
+	"project": {
+		"name": "b_p-wp_normal",
+		"description": "blue partial win point normal controls",
+		"creationDate": "6/26/2024, 10:28:52 AM",
+		"platform": "V5",
+		"language": "cpp",
+		"slot": 3,
+		"sdkVersion": "V5_20240223_11_00_00",
+		"cpp": {
+			"includePath": [],
+			"printf_float": true
+		}
+	}
+}

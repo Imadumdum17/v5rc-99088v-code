@@ -6,9 +6,10 @@ using code = vision::code;
 
 brain Brain;
 
+// Port 10 is broken
 controller Controller1 = controller(primary);
 motor MotorFL = motor(PORT1, ratio18_1, true);
-motor MotorBR = motor(PORT10, ratio18_1, false);
+motor MotorBR = motor(PORT8, ratio18_1, false);
 motor MotorFR = motor(PORT11, ratio18_1, false);
 motor MotorBL = motor(PORT20, ratio18_1, true);
 motor intake = motor(PORT8, ratio6_1, true);
