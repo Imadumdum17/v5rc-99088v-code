@@ -13,6 +13,7 @@ extern motor clamp;
 extern motor_group leftMotor;
 extern motor_group rightMotor;
 extern motor_group ringMech;
+extern motor_group driveTrain;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

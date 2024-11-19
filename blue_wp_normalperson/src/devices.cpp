@@ -18,6 +18,7 @@ motor clamp = motor(PORT4, ratio18_1, false);
 motor_group leftMotor = motor_group(MotorFL, MotorBL);
 motor_group rightMotor = motor_group(MotorFR, MotorBR);
 motor_group ringMech = motor_group(intake, conveyor);
+motor_group driveTrain = motor_group(MotorFL, MotorBL, MotorFR, MotorBR);
 
 // VEXcode generated functions
 
@@ -32,7 +33,7 @@ void vexcodeInit(void) {
 
 
 
-// trust this is what a motor group code looks like
+// trust this is what a motor gruoup code looks like
 
 
 
