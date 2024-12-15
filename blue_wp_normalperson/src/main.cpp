@@ -1,9 +1,10 @@
-#include "vex.h"
+ #include "vex.h"
 #include <iostream>
 #include <string>
 
 using namespace vex;
 bool conveyorToggle = false;
+bool hangToggle = false;
 
 int img = 3;
 double speed = 56.7; //inches per second
@@ -24,45 +25,6 @@ void onevent_Controller1ButtonR1_pressed_0() {
 
 void drivercontrol(void) {
 
-  int deadband = 5;
-  
-  Controller1.ButtonL1.pressed(onevent_Controller1ButtonL1_pressed_0);
-  wait(15, msec);
-  Controller1.ButtonR2.pressed(onevent_Controller1ButtonR2_pressed_0);
-  wait(15, msec);
-  Controller1.ButtonR1.pressed(onevent_Controller1ButtonR1_pressed_0);
-  wait(15, msec);
-  
-  while (true) {
-    if (conveyorToggle == true) {
-      ringMech.spin(forward);
-      ringMech.setVelocity(100, percent);
-    } else {
-      ringMech.stop(brake);
-    }
-
-    //set speed variables to axis
-    int leftMotorSpeed = Controller1.Axis3.position() + Controller1.Axis1.position();
-    int rightMotorSpeed = Controller1.Axis3.position() - Controller1.Axis1.position();
-
-    //turns off left motors if in deadband range, otherwise sets to speed variable
-    if (abs(leftMotorSpeed) < deadband) {
-      leftMotor.setVelocity(0, percent);
-    } else {
-      leftMotor.setVelocity(leftMotorSpeed, percent);
-    }
-    //turns off right motors if in deadband range, otherwise sets to speed variable
-    if (abs(rightMotorSpeed) < deadband) {
-      rightMotor.setVelocity(0, percent);
-    } else {
-      rightMotor.setVelocity(rightMotorSpeed, percent);
-    }
-
-    leftMotor.spin(forward);
-    rightMotor.spin(forward);
-
-    wait(25, msec);
-  }
 }
 
 //linear drive function
@@ -119,5 +81,53 @@ int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!    but what if i wanna remove it
   vexcodeInit();
 
+  
+  ringMech.setVelocity(100, percent);
+
+  int deadband = 5;
+  
+  Controller1.ButtonL1.pressed(onevent_Controller1ButtonL1_pressed_0);
+  wait(15, msec);
+  Controller1.ButtonR2.pressed(onevent_Controller1ButtonR2_pressed_0);
+  wait(15, msec);
+  Controller1.ButtonR1.pressed(onevent_Controller1ButtonR1_pressed_0);
+  wait(15, msec);
+    wait(15, msec);
+  
+  while (true) {
+    if (conveyorToggle == true) {
+      ringMech.spin(forward);
+    } else {
+      ringMech.stop(brake);
+    }
+
+   /* if(Controller1.ButtonA.pressing()) {
+    ringMech.spin(forward);
+   }
+   else {
+    ringMech.stop();
+   } */
+
+    leftMotor.spin(forward);
+    rightMotor.spin(forward);
+
+    //set speed variables to axis
+    int leftMotorSpeed = Controller1.Axis3.position() + Controller1.Axis1.position();
+    int rightMotorSpeed = Controller1.Axis3.position() - Controller1.Axis1.position();
+
+    //turns off left motors if in deadband range, otherwise sets to speed variable
+    if (abs(Controller1.Axis3.position() + Controller1.Axis1.position()) < deadband) {
+      leftMotor.setVelocity(0, percent);
+    } else {
+      leftMotor.setVelocity(Controller1.Axis3.position() + Controller1.Axis1.position(), percent);
+    }
+    //turns off right motors if in deadband range, otherwise sets to speed variable
+    if (abs(Controller1.Axis3.position() - Controller1.Axis1.position()) < deadband) {
+      rightMotor.setVelocity(0, percent);
+    } else {
+      rightMotor.setVelocity(Controller1.Axis3.position() - Controller1.Axis1.position(), percent);
+    }
+
     wait(25, msec);
+  }
 }
