@@ -6,6 +6,8 @@ using namespace pros;
 
 ASSET(path_txt);
 
+#define DIGITAL_SENSOR_PORT 'A'
+
 /**
  * A callback function for LLEMU's center button.
  *
@@ -19,8 +21,8 @@ pros::MotorGroup right_mg({7, 11});
 pros::Motor intake(8);
 pros::Motor conveyor(9);
 pros::Motor thethat(6);
-pros::Motor clamp(4);
 pros::Imu imu(2);
+pros::adi::Pneumatics clamp('A',false);
 
 lemlib::Drivetrain drivetrain(&left_mg, &right_mg, 9.75, 3.75, 333, 2);
 lemlib::OdomSensors sensors(nullptr, nullptr, nullptr, nullptr, &imu);
@@ -109,17 +111,7 @@ void disabled() {}
  */
 void competition_initialize() {}
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
+
 void autonomous() {
 	// chassis.turnToHeading(90, 100000);
 	/* thethat.move(127);
@@ -142,37 +134,21 @@ void autonomous() {
     // chassis.follow(path_txt, 2000, 15);
 }
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
 void opcontrol() {
 	static bool pressed1 = false;
 
-	clamp.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	conveyor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	thethat.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 	while (true) {
-		if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) { clamp.move(127); }
-		if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) { clamp.move(-127); }
-		if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) { conveyor.move(127); intake.move(-127); }
-		if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) { conveyor.move(-127); intake.move(127); }
-
-		if (master.get_digital(E_CONTROLLER_DIGITAL_UP)) { thethat.move(-63); }
-		if (master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) { thethat.move(127); }
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) { clamp.toggle(); // clamp.set_value(true); }
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)) { conveyor.move(127); intake.move(-127); }
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R1)) { conveyor.move(-127); intake.move(127); }
+ 
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) { thethat.move(-63); }
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN)) { thethat.move(127); }
 		
-		if (not master.get_digital(E_CONTROLLER_DIGITAL_L1) and not master.get_digital(E_CONTROLLER_DIGITAL_L2)) { clamp.brake(); }
 		if (not master.get_digital(E_CONTROLLER_DIGITAL_UP) and not master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) { thethat.brake(); }
 		if (not master.get_digital(E_CONTROLLER_DIGITAL_R1) and not master.get_digital(E_CONTROLLER_DIGITAL_R2)) { conveyor.brake(); intake.brake(); } 
 
@@ -188,4 +164,5 @@ void opcontrol() {
 		pros::delay(20);            
 
 	}
+}
 }
