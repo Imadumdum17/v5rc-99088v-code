@@ -28,9 +28,9 @@ lemlib::Drivetrain drivetrain(&left_mg, &right_mg, 9.75, 3.75, 333, 2);
 lemlib::OdomSensors sensors(nullptr, nullptr, nullptr, nullptr, &imu);
 
 // lateral PID controller
-lemlib::ControllerSettings lateral_controller(10, // proportional gain (kP)
+lemlib::ControllerSettings lateral_controller(15, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              3, // derivative gain (kD)
+                                              90000, // derivative gain (kD)
                                               3, // anti windup
                                               1, // small error range, in inches
                                               100, // small error range timeout, in milliseconds
@@ -43,11 +43,11 @@ lemlib::ControllerSettings lateral_controller(10, // proportional gain (kP)
 lemlib::ControllerSettings angular_controller(15, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               1500, // derivative gain (kD)
-                                              0, // anti windup
-                                              0, // small error range, in degrees
-                                              0, // small error range timeout, in milliseconds
-                                              0, // large error range, in degrees
-                                              0, // large error range timeout, in milliseconds
+                                              3, // anti windup
+                                              1, // small error range, in inches
+                                              100, // small error range timeout, in milliseconds
+                                              3, // large error range, in inches
+                                              500, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
 
@@ -113,9 +113,12 @@ void competition_initialize() {}
 
 
 void autonomous() {
-	// chassis.turnToHeading(90, 100000);
-	/* thethat.move(127);
+	/* chassis.setPose(0, 0 , 0);
+	thethat.move(127);
 	delay(300);
+	thethat.brake();
+	chassis.moveToPoint(-7.496, 14.217, 5000);
+	 delay(300);
 	thethat.brake();
 	conveyor.move(127);
 	delay(300);
@@ -142,7 +145,7 @@ void opcontrol() {
 	thethat.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 	while (true) {
-		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) { clamp.toggle(); // clamp.set_value(true); }
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) { clamp.toggle(); }
 		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)) { conveyor.move(127); intake.move(-127); }
 		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R1)) { conveyor.move(-127); intake.move(127); }
  
@@ -165,4 +168,4 @@ void opcontrol() {
 
 	}
 }
-}
+
