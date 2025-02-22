@@ -36,14 +36,14 @@ pros::Motor thethat(8);
 pros::Imu imu(11);
 pros::adi::Pneumatics clamp('A',false);
 
-lemlib::Drivetrain drivetrain(&left_mg, &right_mg, 9.75, 3.75, 333, 2);
+lemlib::Drivetrain drivetrain(&left_mg, &right_mg, 14.25, 2.75, 600, 2);
 lemlib::OdomSensors sensors(nullptr, nullptr, nullptr, nullptr, &imu);
 
 // lateral PID controller
 // to tune, move 48 inches, and adjust
-lemlib::ControllerSettings lateral_controller(15, // proportional gain (kP) helps w/ oscilation
+lemlib::ControllerSettings lateral_controller(10, // proportional gain (kP) helps w/ oscilation
                                               0, // integral gain (kI) bounds of graph/max distance
-                                              90000, // derivative gain (kD) accel
+                                              3, // derivative gain (kD) accel
                                               3, // anti windup
                                               1, // small error range, in inches
                                               100, // small error range timeout, in milliseconds
@@ -54,9 +54,9 @@ lemlib::ControllerSettings lateral_controller(15, // proportional gain (kP) help
 
 // angular PID controller
 // to tune, turn different angles and adjust
-lemlib::ControllerSettings angular_controller(15, // proportional gain (kP)
+lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              1500, // derivative gain (kD)
+                                              10, // derivative gain (kD)
                                               3, // anti windup
                                               1, // small error range, in inches
                                               100, // small error range timeout, in milliseconds
@@ -82,8 +82,8 @@ void button1_pressed() {
 	}
 }
 
+bool pressed2 = false;
 void button2_pressed() {
-	static bool pressed2 = false;
 	pressed2 = !pressed2;
 	if (pressed2) {
 		pros::lcd::set_text(2, "autonColor=red");
@@ -92,6 +92,8 @@ void button2_pressed() {
 
 	}
 }
+
+
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -130,6 +132,14 @@ void competition_initialize() {}
 
 
 void autonomous() {
+	chassis.moveToPose(0, -30, 90, 5000); 
+	/* drivebase.move(63);
+	delay((26 / 86.6) / 500);
+	drivebase.brake();
+	clamp.toggle();
+	if (pressed2 == false) {
+		
+	}
 	pros::lcd::shutdown;
 	
 	pros::vision_object_s_t rtn = vision1.get_by_sig(0, 1);
@@ -148,7 +158,7 @@ void autonomous() {
 	while (abs(yCoord + xCoord) > 79) { 
 		left_mg.move(127); 
 		right_mg.move(-127);
-	 }
+	 } */
 
 	/* chassis.setPose(0, 0 , 0);
 	thethat.move(127);
